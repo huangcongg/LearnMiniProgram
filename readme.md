@@ -170,3 +170,8 @@
 
 ![image-20210502160942800](C:\Users\happy\AppData\Roaming\Typora\typora-user-images\image-20210502160942800.png)
 
+# 小程序初体验
+
+* 数据绑定
+* 列表渲染
+* 事件监听
