@@ -148,8 +148,8 @@
 ## 应用程序的结构
 
 * 小程序结构划分：最上层App -> 多个Page -> 多个组件
-* ![image-20210502032455891](C:\Users\happy\AppData\Roaming\Typora\typora-user-images\image-20210502032455891.png)
-* ![image-20210502032545460](C:\Users\happy\AppData\Roaming\Typora\typora-user-images\image-20210502032545460.png)
+* ![image-20210503190814962](readme.assets/image-20210503190814962.png)
+* ![image-20210503190743756](readme.assets/image-20210503190743756.png)
 * 
 
 # 知识点组织方法
@@ -168,10 +168,23 @@
 * git checkout tag1  // 转向tag1的知识点
 * git checkout tag2  // 转向tag2的知识点
 
-![image-20210502160942800](C:\Users\happy\AppData\Roaming\Typora\typora-user-images\image-20210502160942800.png)
+![image-20210503190658254](readme.assets/image-20210503190658254.png)
 
 # 小程序初体验
 
 * 数据绑定
 * 列表渲染
 * 事件监听
+
+# 小程序的MVVM架构
+
+## Vue的MVVM和小程序MVVM对比
+
+![image-20210503190558549](readme.assets/image-20210503190558549.png)
+
+![image-20210503191037512](readme.assets/image-20210503191037512.png)
+
+## 编程范式
+
+* 1.命令式编程：原生操作DOM
+* 2.生命式编程：Vue/React/Angular
