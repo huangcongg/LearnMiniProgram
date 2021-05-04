@@ -188,3 +188,130 @@
 
 * 1.命令式编程：原生操作DOM
 * 2.生命式编程：Vue/React/Angular
+
+# 小程序的配置和架构
+
+## 配置小程序
+
+* 小程序的很多**开发需求**被规定在了**配置文件**中。
+* 为什么这样做呢？
+  * 这样做可以更有利于我们的**开发效率**；
+  * 并且可以保证开发出来的小程序的某些**风格是比较一致**的；
+  * 比如导航栏-顶部TabBar，以及页面路由等等。
+* 常见的配置文件有哪些呢？
+  * project.config.json: 项目配置文件，比如项目名称、appid等；
+    * https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html
+  * sitemap.json: 小程序搜索相关的；
+    * https://developers.weixin.qq.com/miniprogram/dev/framework/sitemap.html
+  * app.json: 全局配置；
+  * page.json: 页面配置；
+
+## 全局配置
+
+* 全局配置比较多，我们这里将几个比较重要的。完整的查看官方文档。
+
+  * https://developers.weixin.qq.com/miniprogram/dev/reference/configuration/app.html
+  * **pages**：类型：string[]；必填：是；描述：页面路径列表
+  * **window**：类型：Object；必填：否；描述：全局的默认窗口表现
+  * **tabBar**：类型：Object；必填：否；描述：底部tab栏的表现
+  * pages:页面路径列表
+    * 用于指定小程序由**哪些页面组成**，每一项都对应一个页面的**路径信息**。
+    * 小程序中**所有的页面都是必须在pages中进行注册**的。
+  * window：全局的默认窗口展示
+    * 用户指定窗口如何展示，其中还包含了很多其他的属性
+  * tabBar：底部tab栏的展示
+    * 具体属性稍后我们进行演示
+
+* 我们来做如下的效果：
+
+  ![image-20210503201239518](readme.assets/image-20210503201239518.png) 
+
+## 页面配置
+
+直接配置，不需要放到window对象里
+
+# 小程序的双线程模型
+
+* 谁是小程序的宿主环境呢？**微信客户端**
+
+  * **宿主环境**为了执行小程序的各种文件：wxml、wxss文件、js文件
+  * 提供了小程序的**双线程模型**
+
+  ![image-20210503210228087](readme.assets/image-20210503210228087.png)
+
+* **双线程模型**：
+
+  * **WXML模块和WXSS**样式运行于**渲染层**，渲染层使用**WebView线程渲染**（一个程序有多个页面，会使用多个WebView的线程）。
+  * **JS脚本**（app.js/home.js等）运行于**逻辑层**，逻辑层使用JsCore运行js脚本。
+  * 这两个线程都会经由微信客户端（Native）进行中转交互。
+
+* 下面我们探讨一下如何通过这两个线程**渲染出了界面**。
+
+## 界面渲染过程-wxml和DOM树
+
+* 首先，我们需要知道，wxml等价于一棵DOM树，也可以使用一个js对象来模拟（虚拟DOM）
+
+![image-20210503211551980](readme.assets/image-20210503211551980.png)
+
+## 界面渲染过程-初始化渲染
+
+* 那么，WXML可以先转成js对象，再渲染出真正的DOM树
+
+![image-20210503211936812](readme.assets/image-20210503211936812.png)
+
+## 界面渲染过程 - 数据发生变化
+
+* 通过setData把msg数据从 ”hello World“ 变成 ”Goodbye“
+
+  * 产生的**js对象**对应的节点就会发生变化
+  * 此时可以**对比前后两个js对象**得到变化的部分
+  * 然后把这个**差异**应用到原来的Dom树上
+  * 从而达到更新UI的目的，这就是”**数据驱动**“的原理
+
+  ![image-20210503212444698](readme.assets/image-20210503212444698.png)
+
+## 界面渲染的整体流程
+
+* 界面渲染整体流程：
+  * 1.在渲染层，宿主环境会把**WXML**转化成对应的**JS对象**；
+  * 2.将**JS对象**再次转成**真实DOM树**，交由渲染层线程渲染；
+  * 3.数据变化时，逻辑层提供最新的变化数据，js对象发生变化比较进行diff算法对比；
+  * 4.将最新变化的内容反映到真实的DOM树中，更新UI；
+
+# 注册小程序
+
+## 小程序的启动流程
+
+![image-20210503224042010](readme.assets/image-20210503224042010.png)
+
+## 注册小程序 - 参数解析
+
+* 每个小程序都需要在app.js中调用App方法**注册小程序实例**
+  * 在注册时，可以绑定对应的生命周期函数，在生命周期函数中，执行对应的代码。
+  * https://developers.weixin.qq.com/miniprogram/dev/reference/api/App.html
+  * 常用的生命周期函数：
+    * onLaunch：小程序初始化完成时
+    * onShow：小程序显示出来时
+    * onHide：小程序隐藏时
+    * onError：小程序产生一些错误
+
+## 注册App时做什么呢？
+
+* 我们来思考：注册App时，我们一般会做什么呢？
+  * 1.判断小程序的**进入场景**
+  * 2.监听**生命周期函数**，在生命周期中执行对应的业务逻辑，比如在某个生命周期函数中获取微信用户的信息。
+  * 3.因为App()实例只有一个，并且是**全局共享**的（单例对象），所以我们可以将一些共享数据放在这里。
+* **小程序后台存活时间：**
+  * https://developers.weixin.qq.com/miniprogram/dev/framework/operating-mechanism.html
+* **小程序的打开场景较多**：
+  * 常见的打开场景：群聊会话中打开、小程序列表中打开、微信扫一扫打开、另一个小程序打开
+  * https://developers.weixin.qq.com/miniprogram/dev/reference/scene-list.html
+* **如何确定场景？**
+  * 在onLaunch和onShow生命周期回调函数中，会有options参数，其中有scene值
+
+### 获取用户信息 - 保存全局变量
+
+* 获取微信用户的基本信息的方式：
+  * 1.wx.getUserInfo - 即将废弃的接口；
+  * 2.button组件 - 将open-type改成getUserInfo，并且绑定bindgetuserinfo事件去获取；
+  * 3.使用open-data组件展示用户信息；
