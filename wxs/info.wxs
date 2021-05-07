@@ -1,0 +1,14 @@
+
+  // js代码，不能用es6语法，只能用es5语法
+  var message = "Hello World";
+  var name = "coderwhy";
+
+  var sum = function(num1, num2){
+    return num1 + num2
+  }
+  module.exports = {
+    message:message,
+    name:name,
+    sum:sum
+  }
+ 

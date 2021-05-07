@@ -1,0 +1,8 @@
+<template name="abc">
+  <button size="mini">
+    警告
+  </button>
+  <view>
+    哈哈哈下
+  </view>
+</template>
