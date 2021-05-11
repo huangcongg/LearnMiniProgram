@@ -1,0 +1,12 @@
+<!--components/w-goods-item/w-goods-item.wxml-->
+<view class="goods-item">
+  <image mode="widthFix" class="image" style="background-color:#ff5777;"></image>
+  <view class="desc-info">
+    <view class="title">{{item.title}}</view>
+    <view class="info">
+      <text class="price">￥11</text>
+      <image class="icon" src="/assets/images/common/favor.png" />
+      <text class="cfav">1</text>
+    </view>
+  </view>
+</view>
