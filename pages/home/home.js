@@ -45,7 +45,7 @@ Page({
       // 取出轮播图和推荐的数据
       const banners = res.data.data.banner.list;
       const recommends = res.data.data.recommend.list;
-
+      
       // 将banners和recommends放到data中
       this.setData({
         banners,
